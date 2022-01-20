@@ -1,6 +1,5 @@
 let car: Car;
-let arrayWheels:Array<number> = [];
-let arrayBrands:Array<string> = [];
+let numRodes: number = 4;
 
 
 function submitCar() {
@@ -46,39 +45,42 @@ function submitWheelForm() {
 	//EX2. Solo hacer el "new Wheel" si las 4 ruedas son correctas
 	//EX3. Una rueda correcta deberá tener un diámetro entre 1 y 2. Crear una función para validarlas
 
-    const compareValue = (currentValue:number) => ((currentValue <= 2) && (currentValue >= 1));
-
-	for (let i = 1; i <= 4; i++) {
+	for (let i = 1; i <= numRodes; i++) {
         let brandWheel = <HTMLInputElement>document.getElementById("brandWheel" + i);
 		let diameterWheel = <HTMLInputElement>document.getElementById("diameterWheel" + i);
         
-        let diameter = (Number(diameterWheel.value));
-        let brand = brandWheel.value;
+        let diameter = (Number(diameterWheel.value));        
 
-        arrayWheels.push(diameter);
-        arrayBrands.push(brand);
+        if(!validateDiameter(diameter)){
+            errores++;
+        } 
 	}
-    if(arrayWheels.every(compareValue)){
-        validateWheel(arrayWheels, arrayBrands);
+    if(errores === 0){
+        for (let i = 1; i <= numRodes; i++) {
+            let brand = <HTMLInputElement>document.getElementById("brandWheel" + i);
+            let diameterW = <HTMLInputElement>document.getElementById("diameterWheel" + i);
 
+            let wheel_generica = new Wheel(Number(diameterW.value), brand.value);
+            car.addWheel(wheel_generica);     
+        }
+        console.log(car);
+        showWheels();
+        
     }else{
         alert("Les rodes tenen que estar entre els números 1 i 2")
-        deleteFields();          
-    }   
+        deleteFields();
+        errores = 0;
+    }
 }
 
-function validateWheel(wheel:Array<number>, brand:Array<string>){ 
-    for (const i of wheel) {
-        let wheel_generica = new Wheel(wheel[i], brand[i]);
-		car.addWheel(wheel_generica);        
+function validateDiameter (diameter:number){
+    if(diameter >= 1 && diameter <= 2){
+        return true;
     }
-    console.log(car);
-	showWheels();    
+    return false;
 }
 
 function deleteFields (){
-    arrayBrands = [];
-    arrayWheels = [];
 
     for (let i = 0; i < 4; i++){
         let brandValue = <HTMLInputElement>document.getElementById(`brandWheel${i+1}`);
@@ -97,7 +99,7 @@ function showWheels() {
     let wheelTitle = <HTMLInputElement>document.getElementById("wheelTitle");
     wheelTitle.innerText = "Wheels:";
     
-    for (let i = 0; i < arrayWheels.length; i++){
+    for (let i = 0; i < car.wheels.length; i++){
         let wheelOutput = <HTMLInputElement>document.getElementById(`wheelOutput${i+1}`);
         wheelOutput.innerText = `Wheel ${i+1}: `   + "Brand: " + car.wheels[i].brand + "  Diameter: " + car.wheels[i].diameter;
     }
