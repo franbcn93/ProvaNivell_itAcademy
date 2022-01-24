@@ -19,6 +19,7 @@ function submitCar() {
         div.style.visibility = "hidden";
         car = new Car(plateInput.value, colorInput.value, brandInput.value);
         console.log(car);
+        showVehicle();
         showWheelForm();
     }
 }
